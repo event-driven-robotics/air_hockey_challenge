@@ -123,7 +123,7 @@ class AirHockeyDouble(AirHockeyBase):
 
         return new_obs
 
-    def setup(self, obs):
+    def setup(self):
         for i in range(7):
             self._data.joint("iiwa_1/joint_" + str(i + 1)).qpos = self.init_state[i]
             self._data.joint("iiwa_2/joint_" + str(i + 1)).qpos = self.init_state[i]
@@ -135,7 +135,7 @@ class AirHockeyDouble(AirHockeyBase):
 
         self.universal_joint_plugin.reset()
 
-        super().setup(obs)
+        super().setup()
         # Update body positions, needed for _compute_universal_joint
         mujoco.mj_fwdPosition(self._model, self._data)
 

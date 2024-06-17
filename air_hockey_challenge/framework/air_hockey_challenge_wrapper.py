@@ -84,11 +84,11 @@ class AirHockeyChallengeWrapper(Environment):
 
         return obs, reward, done, info
 
-    def render(self, record=False):
-        return self.base_env.render(record=record)
+    def render(self):
+        return self.base_env.render()
 
-    def reset(self, state=None):
-        return self.base_env.reset(state)
+    def reset(self):
+        return self.base_env.reset()
 
     def check_success(self, obs):
         puck_pos, puck_vel = self.base_env.get_puck(obs)

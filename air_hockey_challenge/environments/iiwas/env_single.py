@@ -99,7 +99,7 @@ class AirHockeySingle(AirHockeyBase):
 
         self.universal_joint_plugin.reset()
 
-        super().setup(obs)
+        super().setup()
 
         # Update body positions, needed for _compute_universal_joint
         mujoco.mj_fwdPosition(self._model, self._data)

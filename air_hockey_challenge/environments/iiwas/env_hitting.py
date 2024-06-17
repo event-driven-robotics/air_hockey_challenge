@@ -31,7 +31,7 @@ class AirHockeyHit(AirHockeyDouble):
         else:
             self._opponent_agent = lambda obs: np.zeros(7)
 
-    def setup(self, obs):
+    def setup(self):
         # Initial position of the puck
         puck_pos = np.random.rand(2) * (self.hit_range[:, 1] - self.hit_range[:, 0]) + self.hit_range[:, 0]
 
@@ -50,7 +50,7 @@ class AirHockeyHit(AirHockeyDouble):
             self._write_data("puck_y_vel", puck_vel[1])
             self._write_data("puck_yaw_vel", puck_vel[2])
 
-        super(AirHockeyHit, self).setup(obs)
+        super(AirHockeyHit, self).setup()
 
     def reward(self, state, action, next_state, absorbing):
         return 0

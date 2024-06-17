@@ -38,7 +38,7 @@ class ChallengeCore(Core):
         self.prev_action = None
         self.init_state = init_state
 
-    def _step(self, render, record):
+    def _step(self, render):
         """
         Single step.
 
@@ -85,10 +85,7 @@ class ChallengeCore(Core):
         self._episode_steps += 1
 
         if render:
-            frame = self.mdp.render(record)
-
-            if record:
-                self._record(frame)
+            self.mdp.render()
 
         last = not (
                 self._episode_steps < self.mdp.info.horizon and not absorbing)

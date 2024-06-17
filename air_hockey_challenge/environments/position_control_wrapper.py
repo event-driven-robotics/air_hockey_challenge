@@ -181,8 +181,8 @@ class PositionControl:
             qdd = np.polynomial.polynomial.polyval(t, weights_dd.T)
             yield q, qd, qdd
 
-    def reset(self, obs=None):
-        obs = super(PositionControl, self).reset(obs)
+    def reset(self):
+        obs = super(PositionControl, self).reset()
         self.prev_pos = self._data.qpos[self.actuator_joint_ids]
         self.prev_vel = self._data.qvel[self.actuator_joint_ids]
         self.prev_acc = np.zeros(len(self.actuator_joint_ids))
@@ -268,8 +268,8 @@ class IiwaPositionHit(PositionControlIIWA, iiwas.AirHockeyHit):
             self._opponent_agent_gen = self._default_opponent_action_gen()
             self._opponent_agent = lambda obs: next(self._opponent_agent_gen)
 
-    def setup(self, obs):
-        super().setup(obs)
+    def setup(self):
+        super().setup()
         self._opponent_agent_gen = self._default_opponent_action_gen()
 
     def _default_opponent_action_gen(self):
