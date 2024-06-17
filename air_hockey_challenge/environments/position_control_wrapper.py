@@ -192,7 +192,7 @@ class PlanarPositionDefend(PositionControlPlanar, planar.AirHockeyDefend):
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
-    env = PlanarPositionHit(viewer_params={"start_paused": True})
+    env = PlanarPositionDefend(viewer_params={"start_paused": True})
     env.reset()
     steps = 0
     phase_time = 20 * env.dt

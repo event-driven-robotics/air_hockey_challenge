@@ -1,10 +1,12 @@
 from air_hockey_challenge.environments import position_control_wrapper as position
 from air_hockey_challenge.constraints import *
 from air_hockey_challenge.utils import robot_to_world
-
+from air_hockey_challenge.framework.challenge_core import ChallengeCore
 from mushroom_rl.core import Environment
 from copy import deepcopy
-
+import math
+from air_hockey_challenge.utils import inverse_kinematics, world_to_robot
+from examples.control.defending_agent import DefendingAgent
 
 class AirHockeyChallengeWrapper(Environment):
     def __init__(self, env, action_type="position-velocity", interpolation_order=3,
@@ -45,42 +47,83 @@ class AirHockeyChallengeWrapper(Environment):
         constraint_list.add(JointPositionConstraint(self.env_info))
         constraint_list.add(JointVelocityConstraint(self.env_info))
         constraint_list.add(EndEffectorConstraint(self.env_info))
-
+        
         self.env_info['constraints'] = constraint_list
         self.env_info['env_name'] = self.env_name
 
         super().__init__(self.base_env.info)
+    
+    global stop_going_home
+    stop_going_home = False
+    
+    def tic(self):
+        # Homemade version of matlab tic and toc functions
+        import time
+        global startTime_for_tictoc
+        startTime_for_tictoc = time.time()
 
-    def step(self, action):
-        obs, reward, done, info = self.base_env.step(action)
+    def toc(self):
+        import time
+        if 'startTime_for_tictoc' in globals():
+            print ("Elapsed time is " + str(time.time() - startTime_for_tictoc) + " seconds.")
+        else:
+            print ("Toc: start time not set")
+    
+    def step(self, idx, agent, current_obs, action_decided_idx, action_decided_idx_prev):
+        global stop_going_home
 
+        puck_pos, _ = self.base_env.get_puck(current_obs)
+        
+        current_obs[0:3]=puck_pos
+        
+        # if action_decided_idx==0:
+        #     joint_cmd = agent.get_ee_joint_values(current_obs)
+        # else:
+        joint_cmd = agent.draw_action(current_obs, action_decided_idx) # joint cmd is joint pos and vel desired
+        # self.tic()
+        next_obs, reward, done, info = self.base_env.step(joint_cmd)
+        
+        # self.toc()
         if "opponent" in self.env_name:
             action = self.base_env.action[:, :self.env_info['robot']["n_joints"]]
         else:
             action = self.base_env.action
 
         if self.base_env.n_agents == 1:
-            info["constraints_value"] = deepcopy(self.env_info['constraints'].fun(obs[self.env_info['joint_pos_ids']],
-                                                                                  obs[self.env_info['joint_vel_ids']]))
+
+            info["constraints_value"] = deepcopy(self.env_info['constraints'].fun(next_obs[self.env_info['joint_pos_ids']],
+                                                                                  next_obs[self.env_info['joint_vel_ids']]))
             info["jerk"] = self.base_env.jerk
-            info["success"] = self.check_success(obs)
+            info["success"] = self.check_success(next_obs)
 
-        if "competition" in self.env_name:
-            info["constraints_value"] = list()
-            info["jerk"] = list()
-            for i in range(2):
-                obs_agent = obs[i * int(len(obs)/2): (i+1) * int(len(obs)/2)]
-                info["constraints_value"].append(deepcopy(self.env_info['constraints'].fun(
-                    obs_agent[self.env_info['joint_pos_ids']], obs_agent[self.env_info['joint_vel_ids']])))
-                info["jerk"].append(
-                    self.base_env.jerk[i * self.env_info['robot']['n_joints']:(i + 1) * self.env_info['robot'][
-                        'n_joints']])
+        # if "competition" in self.env_name:
+        #     info["constraints_value"] = list()
+        #     info["jerk"] = list()
+        #     for i in range(2):
+        #         obs_agent = next_obs_thread[i * int(len(next_obs_thread)/2): (i+1) * int(len(next_obs_thread)/2)]
+        #         info["constraints_value"].append(deepcopy(self.env_info['constraints'].fun(
+        #             obs_agent[self.env_info['joint_pos_ids']], obs_agent[self.env_info['joint_vel_ids']])))
+        #         info["jerk"].append(
+        #             self.base_env.jerk[i * self.env_info['robot']['n_joints']:(i + 1) * self.env_info['robot'][
+        #                 'n_joints']])
 
-        return obs, reward, done, info
+            
+        last = False #not (idx < env.info.horizon and not done) # TODO levare cosa brutta
+
+
+        return next_obs, action, reward, done, last, info
 
     def render(self):
         self.base_env.render()
+    
+    def create_agent(self):
+        agent = DefendingAgent(self.base_env.env_info)
+        return agent
 
+    def close(self):
+        self.base_env.stop()
+
+    
     def reset(self, state=None):
         return self.base_env.reset(state)
 
@@ -106,9 +149,9 @@ class AirHockeyChallengeWrapper(Environment):
 
 
 if __name__ == "__main__":
-    env = AirHockeyChallengeWrapper(env="3dof-hit")
+    
+    env = AirHockeyChallengeWrapper(env="3dof-defend")
     env.reset()
-
     R = 0.
     J = 0.
     gamma = 1.

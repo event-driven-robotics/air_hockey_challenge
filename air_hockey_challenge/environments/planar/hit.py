@@ -1,5 +1,6 @@
 import numpy as np
 from air_hockey_challenge.environments.planar.single import AirHockeySingle
+from air_hockey_challenge.utils import inverse_kinematics, world_to_robot
 
 
 class AirHockeyHit(AirHockeySingle):
@@ -23,7 +24,9 @@ class AirHockeyHit(AirHockeySingle):
         self.hit_range = np.array([[-0.7, -0.2], [-hit_width, hit_width]])  # Table Frame
         self.init_velocity_range = (0, 0.5)  # Table Frame
         self.init_ee_range = np.array([[0.60, 1.25], [-0.4, 0.4]])  # Robot Frame
-
+        self.max_distance4reward = 0.5
+        self.min_contact = self.env_info['puck']['radius'] + self.env_info['mallet']['radius']
+        
     def setup(self, state=None):
         # Initial position of the puck
         puck_pos = np.random.rand(2) * (self.hit_range[:, 1] - self.hit_range[:, 0]) + self.hit_range[:, 0]
@@ -48,12 +51,26 @@ class AirHockeyHit(AirHockeySingle):
         super(AirHockeyHit, self).setup(state)
         
     def reward(self, state, action, next_state, absorbing):
-        return 0
-    
+        # check_distance = self.is_hitting(state)
+        puck_pos, _ = self.get_puck(state)
+        ee_pos, _ = self.get_ee()
+        dist = np.linalg.norm(puck_pos[0:3]-ee_pos[0:3])
+        reward_function = 1 - dist/(self.max_distance4reward-self.min_contact) 
+        if (dist<self.min_contact):
+            print("hit!")
+            reward_function = 10
+        # else:
+        #     reward_function = 1 - dist/(self.max_distance4reward-self.min_contact)
+        return reward_function
+
+        
     def is_absorbing(self, obs):
-        _, puck_vel = self.get_puck(obs)
+        puck_pos, puck_vel = self.get_puck(obs)
+                                                             
         # Stop if the puck bounces back on the opponents wall
-        if puck_vel[0] < -0.6:
+        if (self.reward == 5):
+            return True
+        elif puck_vel[0] < -0.6:
             return True
         return super(AirHockeyHit, self).is_absorbing(obs)
 

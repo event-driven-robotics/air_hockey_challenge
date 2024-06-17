@@ -189,7 +189,7 @@ class AgentBase(Agent):
 
     def get_ee_pose(self, obs):
         """
-        Get the Opponent's End-Effector's Position from the observation.
+        # Get the Opponent's End-Effector's Position from the observation.   #TODO:Opponent???!?!?!??!!!?!!??
 
         Args
         ----
