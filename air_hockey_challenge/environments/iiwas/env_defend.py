@@ -61,7 +61,7 @@ if __name__ == '__main__':
         action = np.zeros(7)
         observation, reward, done, info = env.step(action)
         env.render()
-        print(observation)
+        # print(observation)
         gamma *= env.info.gamma
         J += gamma * reward
         R += reward
