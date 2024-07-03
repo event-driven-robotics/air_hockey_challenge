@@ -64,7 +64,7 @@ class AirHockeyDefend(AirHockeySingle):
         dist = self.computeEuclideanDist(ee_pos, puck_pos)
         mod_vel =  math.sqrt(puck_vel[0]*puck_vel[0] + puck_vel[1]*puck_vel[1])
         
-        if dist<=0.085 and puck_vel[0]>0:
+        if dist<=0.085 and puck_vel[0]>0.1:
             print("done !")
             return 1
         else:
