@@ -59,12 +59,14 @@ class AirHockeyDefend(AirHockeySingle):
     
 
     def reward(self, state, action, next_state, absorbing):
+        
         puck_pos, puck_vel = self.get_puck(state)
         ee_pos, _ = self.get_ee()
         dist = self.computeEuclideanDist(ee_pos, puck_pos)
         mod_vel =  math.sqrt(puck_vel[0]*puck_vel[0] + puck_vel[1]*puck_vel[1])
         
-        if dist<=0.085 and puck_vel[0]>0.1:
+        # if dist<=0.085 and puck_vel[0]>0.1:
+        if puck_pos[0] > 0 and puck_vel[0] > 0:
             print("done !")
             return 1
         else:
@@ -73,11 +75,15 @@ class AirHockeyDefend(AirHockeySingle):
 
     def is_absorbing(self, state):
         puck_pos, puck_vel = self.get_puck(state)
+    
         # If puck is over the middle line and moving towards opponent
         if puck_pos[0] > 0 and puck_vel[0] > 0:
             return True
+
         if np.linalg.norm(puck_vel[:2]) < 0.1:
             return True
+        
+
         return super().is_absorbing(state)
 
 
