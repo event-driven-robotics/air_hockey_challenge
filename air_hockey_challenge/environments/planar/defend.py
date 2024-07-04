@@ -18,7 +18,7 @@ class AirHockeyDefend(AirHockeySingle):
         super().__init__(gamma=gamma, horizon=horizon, viewer_params=viewer_params)
 
     def setup(self, state=None):
-        possibili_posizioni = [np.array([-0.5, -0.3])]
+        possibili_posizioni = [np.array([-0.65, -0.3])]
         # x_puck =np.random.uniform(-0.5, -0.5, 1)
         # y_puck= np.random.uniform(-0.3, 0.3, 1)
         # possibili_posizioni = [np.array([x_puck[0], y_puck[0]])]
