@@ -68,7 +68,7 @@ class AirHockeyDefend(AirHockeySingle):
         # if dist<=0.085 and puck_vel[0]>0.1:
         if puck_pos[0] > 0 and puck_vel[0] > 0:
             print("done !")
-            return 1
+            return 10
         else:
             return 0
             
@@ -80,8 +80,8 @@ class AirHockeyDefend(AirHockeySingle):
         if puck_pos[0] > 0 and puck_vel[0] > 0:
             return True
 
-        if np.linalg.norm(puck_vel[:2]) < 0.1:
-            return True
+        # if np.linalg.norm(puck_vel[:2]) < 0.1:
+        #     return True
         
 
         return super().is_absorbing(state)
