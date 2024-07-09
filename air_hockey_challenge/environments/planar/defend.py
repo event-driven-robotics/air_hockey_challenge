@@ -18,7 +18,7 @@ class AirHockeyDefend(AirHockeySingle):
         super().__init__(gamma=gamma, horizon=horizon, viewer_params=viewer_params)
 
     def setup(self, state=None):
-        possibili_posizioni = [np.array([-0.65, -0.3])]
+        possibili_posizioni = [np.array([-0.6, -0.3])]
         # x_puck =np.random.uniform(-0.5, -0.5, 1)
         # y_puck= np.random.uniform(-0.3, 0.3, 1)
         # possibili_posizioni = [np.array([x_puck[0], y_puck[0]])]
@@ -66,18 +66,18 @@ class AirHockeyDefend(AirHockeySingle):
         mod_vel =  math.sqrt(puck_vel[0]*puck_vel[0] + puck_vel[1]*puck_vel[1])
         
         # if dist<=0.085 and puck_vel[0]>0.1:
-        if puck_pos[0] > -0.6 and puck_vel[0] > 0:
+        if puck_pos[0] > -0.5 and puck_vel[0] > 0:
             print("done !")
-            return 10
+            return 10*(puck_pos[0] + 1)
         else:
-            return 0
+            return puck_pos[0] + 0.5
             
 
     def is_absorbing(self, state):
         puck_pos, puck_vel = self.get_puck(state)
     
         # If puck is over the middle line and moving towards opponent
-        if puck_pos[0] > -0.6 and puck_vel[0] > 0:
+        if puck_pos[0] > -0.5 and puck_vel[0] > 0:
             return True
 
         # if np.linalg.norm(puck_vel[:2]) < 0.1:
