@@ -30,7 +30,7 @@ class AirHockeyDefend(AirHockeySingle):
 
         lin_vel = np.random.uniform(self.init_velocity_range[0], self.init_velocity_range[1])
         # angle = np.random.uniform(-0.5, 0.5)
-        angle=math.pi/2
+        angle=0
         puck_vel = np.zeros(3)
         puck_vel[0] = 0
         # # # # puck_vel[1] = np.sin(angle) * lin_vel
@@ -41,7 +41,7 @@ class AirHockeyDefend(AirHockeySingle):
 
         # # Ottieni la posizione corrispondente all'indice selezionato
         # puck_vel[1]= possibili_vel[indice_vel]
-        puck_vel[1] = -1.5
+        puck_vel[1] = 1.5
         puck_vel[2] = np.random.uniform(0, 0, 1)
 
         self._write_data("puck_x_pos", puck_pos[0])
@@ -66,18 +66,18 @@ class AirHockeyDefend(AirHockeySingle):
         mod_vel =  math.sqrt(puck_vel[0]*puck_vel[0] + puck_vel[1]*puck_vel[1])
         
         # if dist<=0.085 and puck_vel[0]>0.1:
-        if puck_pos[0] > -0.5 and puck_vel[0] > 0:
-            print("done !")
-            return 10*(puck_pos[0] + 1)
+        if puck_vel[0]>0 and puck_pos[0]>-0.55:
+            return 1
         else:
-            return puck_pos[0] + 0.5
-            
+            return 0
 
     def is_absorbing(self, state):
         puck_pos, puck_vel = self.get_puck(state)
-    
+        ee_pos, _ = self.get_ee()
+        dist = self.computeEuclideanDist(ee_pos, puck_pos)
+        
         # If puck is over the middle line and moving towards opponent
-        if puck_pos[0] > -0.5 and puck_vel[0] > 0:
+        if puck_vel[0]>0 and puck_pos[0]>-0.55:
             return True
 
         # if np.linalg.norm(puck_vel[:2]) < 0.1:
