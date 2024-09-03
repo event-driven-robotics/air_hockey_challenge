@@ -35,7 +35,7 @@ class AirHockeyDefend(AirHockeySingle):
         puck_vel[0] = 0
         # # # # puck_vel[1] = np.sin(angle) * lin_vel
         # # #[1.5, 1.8, 1.6]
-        possibili_vel = [1, 1.1, 1.2]
+        possibili_vel = [1]
         # Seleziona casualmente un indice
         indice_vel= np.random.randint(0, len(possibili_vel))
 
@@ -66,7 +66,7 @@ class AirHockeyDefend(AirHockeySingle):
         mod_vel =  math.sqrt(puck_vel[0]*puck_vel[0] + puck_vel[1]*puck_vel[1])
         
         # if dist<=0.085 and puck_vel[0]>0.1:
-        if puck_vel[0]>0 and puck_pos[0]>-0.55:
+        if puck_vel[0]>0 and puck_pos[0]>-0.35:
             return 1
         else:
             return 0
@@ -77,7 +77,7 @@ class AirHockeyDefend(AirHockeySingle):
         dist = self.computeEuclideanDist(ee_pos, puck_pos)
         
         # If puck is over the middle line and moving towards opponent
-        if puck_vel[0]>0 and puck_pos[0]>-0.55:
+        if puck_vel[0]>0 and puck_pos[0]>-0.35:
             return True
 
         # if np.linalg.norm(puck_vel[:2]) < 0.1:
