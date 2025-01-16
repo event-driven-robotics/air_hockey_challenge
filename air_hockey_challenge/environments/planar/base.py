@@ -4,7 +4,7 @@ import mujoco
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-from air_hockey_challenge.environments.data.planar import __file__ as env_path
+from air_hockey_challenge.air_hockey_challenge.environments.data.planar import __file__ as env_path
 from mushroom_rl.environments.mujoco import MuJoCo, ObservationType
 from mushroom_rl.utils.spaces import Box
 

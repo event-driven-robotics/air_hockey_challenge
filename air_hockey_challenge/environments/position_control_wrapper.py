@@ -4,9 +4,9 @@ import mujoco
 import numpy as np
 import scipy
 
-from air_hockey_challenge.environments import iiwas as iiwas
-from air_hockey_challenge.environments import planar as planar
-from air_hockey_challenge.utils import inverse_kinematics
+from air_hockey_challenge.air_hockey_challenge.environments import iiwas as iiwas
+from air_hockey_challenge.air_hockey_challenge.environments import planar as planar
+from air_hockey_challenge.air_hockey_challenge.utils import inverse_kinematics
 
 
 class PositionControl:

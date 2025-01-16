@@ -1,6 +1,6 @@
 import numpy as np
 
-from air_hockey_challenge.environments.iiwas.env_single import AirHockeySingle
+from air_hockey_challenge.air_hockey_challenge.environments.iiwas.env_single import AirHockeySingle
 
 
 class AirHockeyDefend(AirHockeySingle):

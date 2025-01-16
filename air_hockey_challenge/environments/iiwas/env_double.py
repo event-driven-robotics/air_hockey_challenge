@@ -2,8 +2,8 @@ import mujoco
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-from air_hockey_challenge.environments.iiwas import AirHockeyBase
-from air_hockey_challenge.utils.kinematics import inverse_kinematics
+from air_hockey_challenge.air_hockey_challenge.environments.iiwas import AirHockeyBase
+from air_hockey_challenge.air_hockey_challenge.utils.kinematics import inverse_kinematics
 
 
 class AirHockeyDouble(AirHockeyBase):

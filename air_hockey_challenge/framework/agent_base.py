@@ -1,6 +1,6 @@
 import copy
 
-from air_hockey_challenge.utils.kinematics import forward_kinematics
+from air_hockey_challenge.air_hockey_challenge.utils.kinematics import forward_kinematics
 from mushroom_rl.core import Agent
 
 

@@ -8,7 +8,7 @@ import osqp
 import scipy.linalg
 from scipy import sparse
 
-from air_hockey_challenge.utils.kinematics import forward_kinematics, inverse_kinematics, jacobian, link_to_xml_name
+from air_hockey_challenge.air_hockey_challenge.utils.kinematics import forward_kinematics, inverse_kinematics, jacobian, link_to_xml_name
 
 
 class TrajectoryOptimizer:

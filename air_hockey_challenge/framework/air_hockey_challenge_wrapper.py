@@ -1,8 +1,8 @@
 from copy import deepcopy
 
-from air_hockey_challenge.constraints import *
-from air_hockey_challenge.environments import position_control_wrapper as position
-from air_hockey_challenge.utils import robot_to_world
+from air_hockey_challenge.air_hockey_challenge.constraints import *
+from air_hockey_challenge.air_hockey_challenge.environments import position_control_wrapper as position
+from air_hockey_challenge.air_hockey_challenge.utils import robot_to_world
 from mushroom_rl.core import Environment
 
 

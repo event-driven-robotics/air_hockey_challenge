@@ -4,8 +4,8 @@ import time
 import numpy as np
 from scipy.interpolate import CubicSpline
 
-from air_hockey_challenge.framework.agent_base import AgentBase
-from baseline.baseline_agent import BezierPlanner, TrajectoryOptimizer, PuckTracker
+from air_hockey_challenge.air_hockey_challenge.framework.agent_base import AgentBase
+from air_hockey_challenge.baseline.baseline_agent import BezierPlanner, TrajectoryOptimizer, PuckTracker
 
 
 def build_agent(env_info, **kwargs):

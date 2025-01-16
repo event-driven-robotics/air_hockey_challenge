@@ -1,7 +1,6 @@
 import numpy as np
 import math 
-from air_hockey_challenge.environments.planar.single import AirHockeySingle
-
+from air_hockey_challenge.air_hockey_challenge.environments.planar.single import AirHockeySingle
 
 class AirHockeyDefend(AirHockeySingle):
     """
@@ -18,10 +17,10 @@ class AirHockeyDefend(AirHockeySingle):
         super().__init__(gamma=gamma, horizon=horizon, viewer_params=viewer_params)
 
     def setup(self, state=None):
+        
+        # possibili_posizioni = np.array([[0, -0.25], [0, 0], [0, 0.25]])
         possibili_posizioni = [np.array([-0.6, -0.3])]
-        # x_puck =np.random.uniform(-0.5, -0.5, 1)
-        # y_puck= np.random.uniform(-0.3, 0.3, 1)
-        # possibili_posizioni = [np.array([x_puck[0], y_puck[0]])]
+
         # Seleziona casualmente un indice
         indice_posizione = np.random.randint(0, len(possibili_posizioni))
 
@@ -30,18 +29,19 @@ class AirHockeyDefend(AirHockeySingle):
 
         lin_vel = np.random.uniform(self.init_velocity_range[0], self.init_velocity_range[1])
         # angle = np.random.uniform(-0.5, 0.5)
-        angle=math.pi/2
+        angle=0
         puck_vel = np.zeros(3)
-        puck_vel[0] = 0
-        # # # # puck_vel[1] = np.sin(angle) * lin_vel
-        # # #[1.5, 1.8, 1.6]
-        # possibili_vel = [1.5, 1.8]
-        # # Seleziona casualmente un indice
-        # indice_vel= np.random.randint(0, len(possibili_vel))
+        
+        # puck_vel[0] = np.random.uniform(-1, -1, 1)
+        
+        puck_vel[0] = np.random.uniform(0, 0, 1)
+   
+        possibili_vel = [1.2]
+     
+        indice_vel= np.random.randint(0, len(possibili_vel))
 
-        # # Ottieni la posizione corrispondente all'indice selezionato
-        # puck_vel[1]= possibili_vel[indice_vel]
-        puck_vel[1] = -1.5
+        puck_vel[1]= possibili_vel[indice_vel]
+        
         puck_vel[2] = np.random.uniform(0, 0, 1)
 
         self._write_data("puck_x_pos", puck_pos[0])
@@ -49,7 +49,7 @@ class AirHockeyDefend(AirHockeySingle):
         self._write_data("puck_x_vel", puck_vel[0])
         self._write_data("puck_y_vel", puck_vel[1])
         self._write_data("puck_yaw_vel", puck_vel[2])
-
+        
         super(AirHockeyDefend, self).setup(state)
         
         
@@ -66,18 +66,18 @@ class AirHockeyDefend(AirHockeySingle):
         mod_vel =  math.sqrt(puck_vel[0]*puck_vel[0] + puck_vel[1]*puck_vel[1])
         
         # if dist<=0.085 and puck_vel[0]>0.1:
-        if puck_pos[0] > -0.5 and puck_vel[0] > 0:
-            print("done !")
-            return 10*(puck_pos[0] + 1)
+        if puck_vel[0]>0 and puck_pos[0]>-0.6:
+            return 1
         else:
-            return puck_pos[0] + 0.5
-            
+            return 0
 
     def is_absorbing(self, state):
         puck_pos, puck_vel = self.get_puck(state)
-    
+        ee_pos, _ = self.get_ee()
+        dist = self.computeEuclideanDist(ee_pos, puck_pos)
+        
         # If puck is over the middle line and moving towards opponent
-        if puck_pos[0] > -0.5 and puck_vel[0] > 0:
+        if puck_vel[0]>0 and puck_pos[0]>-0.55:
             return True
 
         # if np.linalg.norm(puck_vel[:2]) < 0.1:

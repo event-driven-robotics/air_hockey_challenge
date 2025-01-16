@@ -1,7 +1,7 @@
 import mujoco
 import numpy as np
 
-from air_hockey_challenge.environments.iiwas.env_double import AirHockeyDouble
+from air_hockey_challenge.air_hockey_challenge.environments.iiwas.env_double import AirHockeyDouble
 
 
 class AirHockeyTournament(AirHockeyDouble):

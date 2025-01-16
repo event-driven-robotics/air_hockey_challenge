@@ -1,6 +1,6 @@
 import numpy as np
 
-from air_hockey_challenge.utils.kinematics import forward_kinematics
+from air_hockey_challenge.air_hockey_challenge.utils.kinematics import forward_kinematics
 
 
 class UniversalJointPlugin:
