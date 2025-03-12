@@ -12,15 +12,19 @@ class AirHockeyDefend(AirHockeySingle):
     def __init__(self, gamma=0.99, horizon=500, viewer_params={}):
 
         self.init_velocity_range = (1, 3)
+        self.got_reward = False
+        self.absorbing = False
+        self.reward_value = 0
 
         self.start_range = np.array([[0.29, 0.65], [-0.4, 0.4]])  # Table Frame
         self.init_ee_range = np.array([[0.60, 1.25], [-0.4, 0.4]])  # Robot Frame
+        
         super().__init__(gamma=gamma, horizon=horizon, viewer_params=viewer_params)
 
     def setup(self, state=None):
         
         # possibili_posizioni = np.array([[0, -0.25], [0, 0], [0, 0.25]])
-        possibili_posizioni = [np.array([-0.6, -0.3])]
+        possibili_posizioni = [np.array([-0.7, -0.3])]
 
         # Seleziona casualmente un indice
         indice_posizione = np.random.randint(0, len(possibili_posizioni))
@@ -37,11 +41,14 @@ class AirHockeyDefend(AirHockeySingle):
         
         puck_vel[0] = np.random.uniform(0, 0, 1)
    
-        possibili_vel = [1, 1.1, 0.9, 1.2, 1.4, 1.5]
+        possibili_vel = [1.0, 1.1, 0.9, 1.2, 0.8]
      
         indice_vel= np.random.randint(0, len(possibili_vel))
-
+        puck_vel[1] 
+        
         puck_vel[1]= possibili_vel[indice_vel]
+        # puck_vel[1]= np.random.uniform(1.3, 1.8, 1)
+        # puck_vel[1]= np.random.uniform(0.9, 1.2, 1)
         # print("puck_vel[1]: ", puck_vel[1])
         
         puck_vel[2] = np.random.uniform(0, 0, 1)
@@ -58,36 +65,52 @@ class AirHockeyDefend(AirHockeySingle):
     def computeEuclideanDist(self, v1, v2):
         dist = math.sqrt((v1[0]-v2[0])*(v1[0]-v2[0]) + (v1[1]-v2[1])*(v1[1]-v2[1]))
         return dist
-    
+  
 
     def reward(self, state, action, next_state, absorbing):
-        
         puck_pos, puck_vel = self.get_puck(state)
-        ee_pos, _ = self.get_ee()
+        ee_pos, ee_vel = self.get_ee()
+        global reward
         dist = self.computeEuclideanDist(ee_pos, puck_pos)
-        mod_vel =  math.sqrt(puck_vel[0]*puck_vel[0] + puck_vel[1]*puck_vel[1])
         
-        # if dist<=0.085 and puck_vel[0]>0.1:
-        if puck_vel[0]>0 and puck_pos[0]>-0.55:
-            return 1
-        else:
-            return 0
+        if self.absorbing:
+            self.reward_value = 1
+            return self.reward_value
+        
+        
 
+        if puck_vel[0] > 0.01 and puck_pos[0] > -0.6 :
+            print("HIT      ", dist)
+            self.got_reward = True
+            self.reward_value = 250
+            return self.reward_value
+        
+        
+        # elif self.joint<0.0001 :
+        #     # print ("waiting")
+        #     self.reward_value = 5
+        else:
+            self.reward_value = -1
+                
+        return self.reward_value
+    
+    
+        
     def is_absorbing(self, state):
         puck_pos, puck_vel = self.get_puck(state)
+     
         ee_pos, _ = self.get_ee()
         dist = self.computeEuclideanDist(ee_pos, puck_pos)
-        
-        # If puck is over the middle line and moving towards opponent
-        if puck_vel[0]>0 and puck_pos[0]>-0.55:
+
+        if self.got_reward and puck_vel[0] > 0.01 and puck_pos[0] > -0.60:
+            self.absorbing = True
+            self.reward_value = 100
             return True
-
-        # if np.linalg.norm(puck_vel[:2]) < 0.1:
-        #     return True
-        
-
+        else:
+            self.absorbing = False
+            
+       
         return super().is_absorbing(state)
-
 
 if __name__ == '__main__':
     env = AirHockeyDefend()
